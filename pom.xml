@@ -30,6 +30,7 @@
             <artifactId>spigot-api</artifactId>
             <version>1.9-R0.1-SNAPSHOT</version>
         </dependency>
+        <!--Need to install the craftbukkit jar into maven after being built with BuildTools.jar-->
         <dependency>
             <groupId>org.craftbukkit</groupId>
             <artifactId>craftbukkit</artifactId>
