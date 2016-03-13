@@ -25,6 +25,10 @@
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
+        <repository>
+            <id>pex-repo</id>
+            <url>http://pex-repo.aoeu.xyz</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -55,7 +59,7 @@
         <dependency>
             <groupId>ru.tehkode</groupId>
             <artifactId>PermissionsEx</artifactId>
-            <version>1.23.4</version>
+            <version>1.23.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>de.bananaco</groupId>
