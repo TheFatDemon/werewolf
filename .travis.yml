@@ -1,4 +1,4 @@
 language: java
-script: ant init
+script: mvn clean install
 notifications:
   email: true
