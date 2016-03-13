@@ -88,6 +88,11 @@
             <artifactId>worldedit-bukkit</artifactId>
             <version>LATEST</version>
         </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldguard</artifactId>
+            <version>LATEST</version>
+        </dependency>
     </dependencies>
 
     <build>
