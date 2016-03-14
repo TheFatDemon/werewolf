@@ -3,15 +3,10 @@ package com.dogonfire.werewolf;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 
-import net.minecraft.server.v1_8_R3.EntityPlayer;
-import net.minecraft.server.v1_8_R3.IChatBaseComponent;
-import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityEffect;
-import net.minecraft.server.v1_8_R3.PacketPlayOutRemoveEntityEffect;
-import net.minecraft.server.v1_8_R3.PlayerConnection;
+import net.minecraft.server.v1_9_R1.*;
 
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -85,7 +80,7 @@ public class PacketUtils
 			{
 				Field field = pr.getClass().getDeclaredField("b");
 				field.setAccessible(true);
-				field.setByte(pr, (byte) pe.getId());
+				field.set(pr, MobEffectList.fromId(pe.getId()));
 				field.setAccessible(!field.isAccessible());
 			}
 		}

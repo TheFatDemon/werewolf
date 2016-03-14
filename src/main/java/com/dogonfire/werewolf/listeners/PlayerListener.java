@@ -15,8 +15,8 @@ import com.dogonfire.werewolf.versioning.UpdateNotifier;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftWolf;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftWolf;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import net.minecraft.server.v1_8_R3.Packet;
+import net.minecraft.server.v1_9_R1.Packet;
 
 public class PlayerListener implements Listener
 {
@@ -200,7 +200,7 @@ public class PlayerListener implements Listener
 			{
 				org.bukkit.inventory.ItemStack heldItem = event.getPlayer().getInventory().getItem(event.getNewSlot());
 
-				net.minecraft.server.v1_8_R3.ItemStack craftItem = CraftItemStack.asNMSCopy(heldItem);
+				net.minecraft.server.v1_9_R1.ItemStack craftItem = CraftItemStack.asNMSCopy(heldItem);
 
 				Werewolf.getSkinManager().sendPacketsToWorld(event.getPlayer().getWorld(), new Packet[] { skin.getEquipmentChangePacket((short) 0, craftItem) });
 			}
