@@ -8,9 +8,9 @@ import com.dogonfire.werewolf.LanguageManager;
 import com.dogonfire.werewolf.Werewolf;
 import com.dogonfire.werewolf.WerewolfSkin;
 
-import net.minecraft.server.v1_8_R3.Packet;
+import net.minecraft.server.v1_9_R1.Packet;
 
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftWolf;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftWolf;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;

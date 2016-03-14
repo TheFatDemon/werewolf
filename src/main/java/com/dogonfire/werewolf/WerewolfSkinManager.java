@@ -3,9 +3,9 @@ package com.dogonfire.werewolf;
 import java.util.HashMap;
 import java.util.UUID;
 
-import net.minecraft.server.v1_8_R3.Packet;
+import net.minecraft.server.v1_9_R1.Packet;
 
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -15,7 +15,7 @@ public class WerewolfSkinManager
 {
 	private Werewolf						plugin;
 	private HashMap<UUID, WerewolfSkin>		skins			= new HashMap<UUID, WerewolfSkin>();
-	protected int							nextID			= -2147483648;
+	protected int							nextID			= Integer.MIN_VALUE; //-2147483648;
 
 	WerewolfSkinManager(Werewolf p)
 	{
@@ -65,7 +65,7 @@ public class WerewolfSkinManager
 		}
 		this.skins.put(player.getUniqueId(), skin);
 
-		Packet spawnPacket = skin.getPlayerSpawnPacket(player.getLocation(), (short) player.getItemInHand().getTypeId());
+		Packet spawnPacket = skin.getPlayerSpawnPacket(player.getLocation(), player.getItemInHand().getTypeId());
 		Packet infoPacket = skin.getPlayerInfoPacket(player, true);
 
 		// 1.8 client will not render a player that is not on the tab player list
@@ -215,6 +215,7 @@ public class WerewolfSkinManager
 
 				for (Packet p : packets)
 				{
+					plugin.logDebug("disguiseToWorld(): Packet: " + p.getClass().getName());
 					plugin.logDebug("disguiseToWorld(): Sending packet to " + observer.getName());
 
 					((CraftPlayer) observer).getHandle().playerConnection.sendPacket(p);

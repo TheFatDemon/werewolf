@@ -4,33 +4,22 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 
 import com.dogonfire.werewolf.ClanManager.ClanType;
+import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
-import net.minecraft.server.v1_8_R3.DataWatcher;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
-//import net.minecraft.server.v1_8_R3.EnumPlayerInfoAction;
-import net.minecraft.server.v1_8_R3.ItemStack;
-import net.minecraft.server.v1_8_R3.MathHelper;
-import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntity.PacketPlayOutEntityLook;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook;
+import net.minecraft.server.v1_9_R1.*;
+//import net.minecraft.server.v1_9_R1.EnumPlayerInfoAction;
+import net.minecraft.server.v1_9_R1.PacketPlayOutEntity.PacketPlayOutEntityLook;
+import net.minecraft.server.v1_9_R1.PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook;
 //import net.minecraft.server.v1_8_R1.PacketPlayOutEntity.PacketPlayOutEntityLook;
 //import net.minecraft.server.v1_8_R1.PacketPlayOutEntity.PacketPlayOutRelEntityMoveLook;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityEquipment;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityHeadRotation;
 //import net.minecraft.server.v1_8_R2.PacketPlayOutEntityLook;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityMetadata;
-import net.minecraft.server.v1_8_R3.PacketPlayOutEntityTeleport;
-import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
-import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
+import net.minecraft.server.v1_9_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
 //import net.minecraft.server.v1_8_R2.PacketPlayOutRelEntityMoveLook;
-import net.minecraft.server.v1_8_R3.PacketPlayOutScoreboardTeam;
 
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Team;
 
@@ -45,7 +34,7 @@ public class WerewolfSkin
 	private int			encposY;
 	private int			encposZ;
 	private boolean		firstSpawnPacket	= false;
-	private DataWatcher	metadata;
+	private WerewolfDataWatcher	metadata;
 	private boolean		burning				= false;
 	private byte		hasCustomName		= 1;
 	private WerewolfEntity werewolfEntity = null;
@@ -55,24 +44,24 @@ public class WerewolfSkin
 		this.entityID = id;
 		
 		 // TODO: Replaced with SkinCache.getPlayerUUIDFor
-		this.accountUUID = UUID.nameUUIDFromBytes(new byte[] { (byte)(int)(Math.random() * 255.0D), (byte)(int)(Math.random() * 255.0D), (byte)(int)(Math.random() * 255.0D) });
+		this.accountUUID = UUID.randomUUID(); //UUID.nameUUIDFromBytes(new byte[] { (byte)(int)(Math.random() * 255.0D), (byte)(int)(Math.random() * 255.0D), (byte)(int)(Math.random() * 255.0D) });
 		this.accountName = accountName;
 
 		this.texture = texture;
 		this.textureSignature = textureSignature;
 		
 		this.metadata = new WerewolfDataWatcher(null);
-		this.metadata.a(0, (byte) 0);
-		this.metadata.a(5, accountName);
+		this.metadata.register(wrapByte(0), (byte) 0);
+		this.metadata.register(wrapString(5), accountName);
 
-		this.metadata.a(12, 0);
+		this.metadata.register(wrapInt(12), 0);
 
 		setCustomName(true);
 	}
 
 	public static byte degreeToByte(float degree)
 	{
-		return (byte) (degree * 256.0F / 360.0F);
+        return (byte) ((int) (degree * 256.0F / 360.0F));
 	}
 
 	public int getEntityID()
@@ -84,11 +73,11 @@ public class WerewolfSkin
 	{
 		if (crouched)
 		{
-			this.metadata.watch(0, (byte) 2);
+			this.metadata.set(wrapByte(0), (byte) 2);
 		}
 		else
 		{
-			this.metadata.watch(0, (byte) 0);
+			this.metadata.set(wrapByte(0), (byte) 0);
 		}
 	}
 
@@ -96,11 +85,11 @@ public class WerewolfSkin
 	{
 		if (burning)
 		{
-			this.metadata.watch(0, (byte) 1);
+			this.metadata.set(wrapByte(0), (byte) 1);
 		}
 		else
 		{
-			this.metadata.watch(0, (byte) 0);
+			this.metadata.set(wrapByte(0), (byte) 0);
 		}
 	}
 
@@ -113,7 +102,7 @@ public class WerewolfSkin
 		return new PacketPlayOutEntityMetadata(this.entityID, this.metadata, true);
 	}
 
-	public PacketPlayOutNamedEntitySpawn getPlayerSpawnPacket(Location loc, short item)
+	public PacketPlayOutNamedEntitySpawn getPlayerSpawnPacket(Location loc, int item)
 	{
 		PacketPlayOutNamedEntitySpawn packet = new PacketPlayOutNamedEntitySpawn();
 
@@ -137,8 +126,8 @@ public class WerewolfSkin
 			Field zField = packet.getClass().getDeclaredField("e");
 			Field yawField = packet.getClass().getDeclaredField("f");
 			Field pitchField = packet.getClass().getDeclaredField("g");
-			Field itemField = packet.getClass().getDeclaredField("h");
-			Field metadataField = packet.getClass().getDeclaredField("i");
+			Field metadataField = packet.getClass().getDeclaredField("h");
+            Field itemsField = packet.getClass().getDeclaredField("i");
 
 			idField.setAccessible(true);
 			UUIDField.setAccessible(true);
@@ -147,18 +136,18 @@ public class WerewolfSkin
 			zField.setAccessible(true);
 			yawField.setAccessible(true);
 			pitchField.setAccessible(true);
-			itemField.setAccessible(true);
-			metadataField.setAccessible(true);
+            metadataField.setAccessible(true);
+			itemsField.setAccessible(true);
 
-			idField.set(packet, Integer.valueOf(this.entityID));
+			idField.set(packet, this.entityID);
 			UUIDField.set(packet, this.accountUUID);
-			xField.set(packet, Integer.valueOf(x));
-			yField.set(packet, Integer.valueOf(y));
-			zField.set(packet, Integer.valueOf(z));
-			yawField.set(packet, Byte.valueOf(degreeToByte(loc.getYaw())));
-			pitchField.set(packet, Byte.valueOf(degreeToByte(loc.getPitch())));
-			itemField.set(packet, Short.valueOf(item));
+			xField.set(packet, (double) x);
+			yField.set(packet, (double) y);
+			zField.set(packet, (double) z);
+			yawField.set(packet, degreeToByte(loc.getYaw()));
+			pitchField.set(packet, degreeToByte(loc.getPitch()));
 			metadataField.set(packet, this.metadata);
+            itemsField.set(packet, Lists.newArrayList(this.metadata.getItem(wrapInt(item))));
 		}
 		catch (Exception e)
 		{
@@ -209,7 +198,7 @@ public class WerewolfSkin
 		}
 		else
 		{
-			packet = new PacketPlayOutEntityEquipment(this.entityID, slot, item);
+			packet = new PacketPlayOutEntityEquipment(this.entityID, EnumItemSlot.MAINHAND, item);
 		}
 
 		return packet;
@@ -336,13 +325,11 @@ public class WerewolfSkin
 	    {
 	    	this.werewolfEntity = WerewolfEntity.newWerewolfEntity(player.getLocation(), gameProfile, playerEntity.playerConnection);
 
-	    	//return new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, new EntityPlayer[] { this.werewolfEntity });
-	    	return new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, new EntityPlayer[] { this.werewolfEntity });
+	    	return new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER, this.werewolfEntity);
 	    }
 	    else
 	    {
-		    //return new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, new EntityPlayer[] { this.werewolfEntity });	    	
-		    return new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, new EntityPlayer[] { this.werewolfEntity });	    	
+		    return new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.REMOVE_PLAYER, this.werewolfEntity);
 	    }
 	}
 
@@ -381,8 +368,8 @@ public class WerewolfSkin
 
 			idField.setAccessible(true);
 			animationField.setAccessible(true);
-			idField.set(packet, Integer.valueOf(this.entityID));
-			animationField.set(packet, Integer.valueOf(animation));
+			idField.set(packet, this.entityID);
+			animationField.set(packet, animation);
 		}
 		catch (Exception ex)
 		{
@@ -398,4 +385,19 @@ public class WerewolfSkin
 
 		return packet;
 	}
+
+	private DataWatcherObject wrapInt(int val)
+	{
+		return new DataWatcherObject<>(val, DataWatcherRegistry.b);
+	}
+
+    private DataWatcherObject wrapByte(int val)
+    {
+        return new DataWatcherObject<>(val, DataWatcherRegistry.a);
+    }
+
+    private DataWatcherObject wrapString(int val)
+    {
+        return new DataWatcherObject<>(val, DataWatcherRegistry.d);
+    }
 }

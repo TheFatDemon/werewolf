@@ -1,24 +1,26 @@
 package com.dogonfire.werewolf;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import net.minecraft.server.v1_9_R1.DataWatcherObject;
 import org.apache.commons.lang3.ObjectUtils;
 
-import net.minecraft.server.v1_8_R3.DataWatcher;
-import net.minecraft.server.v1_8_R3.Entity;
+import net.minecraft.server.v1_9_R1.DataWatcher;
+import net.minecraft.server.v1_9_R1.Entity;
 
 public class WerewolfDataWatcher extends DataWatcher
 {
-	static Method	iMethod;
+	static Method	cMethod;
 	static Field	eBoolean;
 
 	static
 	{
 		try
 		{
-			iMethod = DataWatcher.class.getDeclaredMethod("j", new Class[] { Integer.TYPE });
-			iMethod.setAccessible(true);			
+			cMethod = DataWatcher.class.getDeclaredMethod("c", new Class[]{DataWatcherObject.class});
+			cMethod.setAccessible(true);
 		}
 		catch (Exception localException1)
 		{
@@ -39,28 +41,30 @@ public class WerewolfDataWatcher extends DataWatcher
 		super(arg0);
 	}
 
-	public void watch(int paramInt, Object paramObject)
+	public void set(DataWatcherObject datawatcherobject, Object t0)
 	{
-		WatchableObject localWatchableObject = null;
-		try
-		{
-			localWatchableObject = (WatchableObject) iMethod.invoke(this, new Object[] { Integer.valueOf(paramInt) });
-		}
-		catch (Exception localException)
-		{
-		}
-		
-		if (ObjectUtils.notEqual(paramObject, localWatchableObject.b()))
-		{
-			localWatchableObject.a(paramObject);
-			localWatchableObject.a(true);
-			try
-			{
+		DataWatcher.Item datawatcher_item = getItem(datawatcherobject);
+
+		if (ObjectUtils.notEqual(t0, datawatcher_item.b())) {
+			datawatcher_item.a(t0);
+			datawatcher_item.a(true);
+
+			try {
 				eBoolean.setBoolean(this, true);
-			}
-			catch (Exception localException1)
-			{
+			} catch (Exception ignored) {
 			}
 		}
 	}
+
+    public DataWatcher.Item getItem(DataWatcherObject object) {
+        try
+        {
+            return (DataWatcher.Item) cMethod.invoke(this, new Object[]{object});
+        }
+        catch (IllegalAccessException| InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
