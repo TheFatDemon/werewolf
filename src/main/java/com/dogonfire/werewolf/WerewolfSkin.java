@@ -147,7 +147,7 @@ public class WerewolfSkin
 			yawField.set(packet, degreeToByte(loc.getYaw()));
 			pitchField.set(packet, degreeToByte(loc.getPitch()));
 			metadataField.set(packet, this.metadata);
-            itemsField.set(packet, Lists.newArrayList(this.metadata.getItem(wrapInt(item))));
+            itemsField.set(packet, Lists.newArrayList(this.metadata.getItem(wrapInt(item)))); // FIXME
 		}
 		catch (Exception e)
 		{
